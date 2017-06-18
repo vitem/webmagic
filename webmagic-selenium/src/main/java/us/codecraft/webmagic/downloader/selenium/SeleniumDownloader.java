@@ -37,14 +37,21 @@ public class SeleniumDownloader implements Downloader, Closeable {
 
 	private static final String DRIVER_PHANTOMJS = "phantomjs";
 
+	private static final String DRIVER_CHROME = "/Users/vitem/develop/chromedriver/chromedriver";
+	private static final String PHANTOMJS_EXEC_PATH = "/Users/vitem/develop/phantomjs/bin/phantomjs";
+
+
+
 	/**
 	 * 新建
 	 *
 	 * @param chromeDriverPath chromeDriverPath
 	 */
 	public SeleniumDownloader(String chromeDriverPath) {
-		System.getProperties().setProperty("webdriver.chrome.driver",
-				chromeDriverPath);
+		if(chromeDriverPath==null){
+			chromeDriverPath = DRIVER_CHROME;
+		}
+		System.getProperties().setProperty("webdriver.chrome.driver", chromeDriverPath);
 	}
 
 	/**
@@ -53,8 +60,7 @@ public class SeleniumDownloader implements Downloader, Closeable {
 	 * @author bob.li.0718@gmail.com
 	 */
 	public SeleniumDownloader() {
-		// System.setProperty("phantomjs.binary.path",
-		// "/Users/Bingo/Downloads/phantomjs-1.9.7-macosx/bin/phantomjs");
+		System.setProperty("phantomjs.binary.path",PHANTOMJS_EXEC_PATH);
 	}
 
 	/**

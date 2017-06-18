@@ -92,7 +92,7 @@ class WebDriverPool {
 			}
 			// "phantomjs_driver_path"
 			if (sConfig.getProperty("phantomjs_driver_path") != null) {
-				System.out.println("Test will use an external GhostDriver");
+				System.out.println("Test will use an external GhostDriver : "+DRIVER_PHANTOMJS);
 				sCaps.setCapability(
 						PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_PATH_PROPERTY,
 						sConfig.getProperty("phantomjs_driver_path"));
@@ -119,8 +119,7 @@ class WebDriverPool {
 				cliArgsCap);
 
 		// Control LogLevel for GhostDriver, via CLI arguments
-		sCaps.setCapability(
-				PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
+		sCaps.setCapability( PhantomJSDriverService.PHANTOMJS_GHOSTDRIVER_CLI_ARGS,
 				new String[] { "--logLevel="
 						+ (sConfig.getProperty("phantomjs_driver_loglevel") != null ? sConfig
 								.getProperty("phantomjs_driver_loglevel")
