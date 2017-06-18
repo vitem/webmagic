@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
@@ -63,20 +62,20 @@ public class HttpClientDownloaderTest {
 
     @Test
     public void testGetHtmlCharset() throws Exception {
-        HttpServer server = httpserver(13423);
+        HttpServer server = httpServer(13423);
         server.get(by(uri("/header"))).response(header("Content-Type", "text/html; charset=gbk"));
         server.get(by(uri("/meta4"))).response(with(text("<html>\n" +
                 "  <head>\n" +
                 "    <meta charset='gbk'/>\n" +
                 "  </head>\n" +
                 "  <body></body>\n" +
-                "</html>")),header("Content-Type",""));
+                "</html>")),header("Content-Type","text/html; charset=gbk"));
         server.get(by(uri("/meta5"))).response(with(text("<html>\n" +
                 "  <head>\n" +
                 "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=gbk\" />\n" +
                 "  </head>\n" +
                 "  <body></body>\n" +
-                "</html>")),header("Content-Type",""));
+                "</html>")),header("Content-Type","text/html"));
         Runner.running(server, new Runnable() {
             @Override
             public void run() {
@@ -114,7 +113,8 @@ public class HttpClientDownloaderTest {
 
     @Test
     public void test_selectRequestMethod() throws Exception {
-        HttpServer server = httpserver(13423);
+        final int port = 13423;
+        HttpServer server = httpServer(port);
         server.get(eq(query("q"), "webmagic")).response("get");
         server.post(eq(form("q"), "webmagic")).response("post");
         server.put(eq(form("q"), "webmagic")).response("put");
@@ -127,11 +127,11 @@ public class HttpClientDownloaderTest {
             @Override
             public void run() throws Exception {
                 Request request = new Request();
-                request.setUrl("http://127.0.0.1:13423/search?q=webmagic");
+                request.setUrl("http://127.0.0.1:" + port + "/search?q=webmagic");
                 request.setMethod(HttpConstant.Method.GET);
                 Map<String,Object> params = new HashedMap();
                 params.put("q","webmagic");
-                HttpUriRequest  httpUriRequest = httpUriRequestConverter.convert(request,site,null).getHttpUriRequest();
+                HttpUriRequest httpUriRequest = httpUriRequestConverter.convert(request,site,null).getHttpUriRequest();
                 assertThat(EntityUtils.toString(HttpClients.custom().build().execute(httpUriRequest).getEntity())).isEqualTo("get");
                 request.setMethod(HttpConstant.Method.DELETE);
                 httpUriRequest = httpUriRequestConverter.convert(request, site, null).getHttpUriRequest();
@@ -142,7 +142,7 @@ public class HttpClientDownloaderTest {
                 request.setMethod(HttpConstant.Method.TRACE);
                 httpUriRequest = httpUriRequestConverter.convert(request, site, null).getHttpUriRequest();
                 assertThat(EntityUtils.toString(HttpClients.custom().build().execute(httpUriRequest).getEntity())).isEqualTo("trace");
-                request.setUrl("http://127.0.0.1:13423/search");
+                request.setUrl("http://127.0.0.1:" + port + "/search");
                 request.setMethod(HttpConstant.Method.POST);
                 request.setRequestBody(HttpRequestBody.form(params, "utf-8"));
                 httpUriRequest = httpUriRequestConverter.convert(request, site, null).getHttpUriRequest();
@@ -156,7 +156,7 @@ public class HttpClientDownloaderTest {
 
     @Test
     public void test_set_request_cookie() throws Exception {
-        HttpServer server = httpserver(13423);
+        HttpServer server = httpServer(13423);
         server.get(eq(cookie("cookie"), "cookie-webmagic")).response("ok");
         Runner.running(server, new Runnable() {
             @Override
@@ -172,8 +172,25 @@ public class HttpClientDownloaderTest {
     }
 
     @Test
+    public void test_disableCookieManagement() throws Exception {
+        HttpServer server = httpServer(13423);
+        server.get(not(eq(cookie("cookie"), "cookie-webmagic"))).response("ok");
+        Runner.running(server, new Runnable() {
+            @Override
+            public void run() throws Exception {
+                HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
+                Request request = new Request();
+                request.setUrl("http://127.0.0.1:13423");
+                request.addCookie("cookie","cookie-webmagic");
+                Page page = httpClientDownloader.download(request, Site.me().setDisableCookieManagement(true).toTask());
+                assertThat(page.getRawText()).isEqualTo("ok");
+            }
+        });
+    }
+
+    @Test
     public void test_set_request_header() throws Exception {
-        HttpServer server = httpserver(13423);
+        HttpServer server = httpServer(13423);
         server.get(eq(header("header"), "header-webmagic")).response("ok");
         Runner.running(server, new Runnable() {
             @Override
@@ -189,8 +206,24 @@ public class HttpClientDownloaderTest {
     }
 
     @Test
+    public void test_set_site_header() throws Exception {
+        HttpServer server = httpServer(13423);
+        server.get(eq(header("header"), "header-webmagic")).response("ok");
+        Runner.running(server, new Runnable() {
+            @Override
+            public void run() throws Exception {
+                HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
+                Request request = new Request();
+                request.setUrl("http://127.0.0.1:13423");
+                Page page = httpClientDownloader.download(request, Site.me().addHeader("header","header-webmagic").toTask());
+                assertThat(page.getRawText()).isEqualTo("ok");
+            }
+        });
+    }
+
+    @Test
     public void test_set_site_cookie() throws Exception {
-        HttpServer server = httpserver(13423);
+        HttpServer server = httpServer(13423);
         server.get(eq(cookie("cookie"), "cookie-webmagic")).response("ok");
         Runner.running(server, new Runnable() {
             @Override
@@ -207,7 +240,7 @@ public class HttpClientDownloaderTest {
 
     @Test
     public void test_download_when_task_is_null() throws Exception {
-        HttpServer server = httpserver(13423);
+        HttpServer server = httpServer(13423);
         server.response("foo");
         Runner.running(server, new Runnable() {
             @Override
@@ -221,15 +254,21 @@ public class HttpClientDownloaderTest {
         });
     }
 
-    @Ignore("need proxy server")
     @Test
-    public void test_download_by_SimpleProxyProvider(){
-        HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
-        httpClientDownloader.setProxyProvider(SimpleProxyProvider.from(new Proxy("127.0.0.1", 1087)));
-        Request request = new Request();
-        request.setUrl("https://www.baidu.com");
-        Page page = httpClientDownloader.download(request, Site.me().toTask());
-        assertThat(page.isDownloadSuccess());
+    public void test_download_auth_by_SimpleProxyProvider() throws Exception {
+        HttpServer server = httpServer(13423);
+        server.get(eq(header("Proxy-Authorization"), "Basic dXNlcm5hbWU6cGFzc3dvcmQ=")).response("ok");
+        Runner.running(server, new Runnable() {
+            @Override
+            public void run() throws Exception {
+                HttpClientDownloader httpClientDownloader = new HttpClientDownloader();
+                httpClientDownloader.setProxyProvider(SimpleProxyProvider.from(new Proxy("127.0.0.1", 13423, "username", "password")));
+                Request request = new Request();
+                request.setUrl("http://www.baidu.com");
+                Page page = httpClientDownloader.download(request, Site.me().toTask());
+                assertThat(page.getRawText()).isEqualTo("ok");
+            }
+        });
     }
 
 }

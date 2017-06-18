@@ -1,4 +1,4 @@
-![logo](https://raw.github.com/code4craft/webmagic/master/assets/logo.jpg)
+![logo](http://webmagic.io/images/logo.jpeg)
 
 [Readme in Chinese](https://github.com/code4craft/webmagic/tree/master/README-zh.md)
 
@@ -23,12 +23,12 @@ Add dependencies to your pom.xml:
 <dependency>
     <groupId>us.codecraft</groupId>
     <artifactId>webmagic-core</artifactId>
-    <version>0.6.1</version>
+    <version>0.7.2</version>
 </dependency>
 <dependency>
     <groupId>us.codecraft</groupId>
     <artifactId>webmagic-extension</artifactId>
-    <version>0.6.1</version>
+    <version>0.7.2</version>
 </dependency>
 ```
         

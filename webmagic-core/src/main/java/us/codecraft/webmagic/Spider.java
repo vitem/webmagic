@@ -303,7 +303,7 @@ public class Spider implements Runnable, Task {
     public void run() {
         checkRunningStat();
         initComponent();
-        logger.info("Spider " + getUUID() + " started!");
+        logger.info("Spider {} started!",getUUID());
         while (!Thread.currentThread().isInterrupted() && stat.get() == STAT_RUNNING) {
             final Request request = scheduler.poll(this);
             if (request == null) {
@@ -335,6 +335,7 @@ public class Spider implements Runnable, Task {
         if (destroyWhenExit) {
             close();
         }
+        logger.info("Spider {} closed! {} pages downloaded.", getUUID(), pageCount.get());
     }
 
     protected void onError(Request request) {
@@ -409,7 +410,6 @@ public class Spider implements Runnable, Task {
     }
 
     private void onDownloadSuccess(Request request, Page page) {
-        onSuccess(request);
         if (site.getAcceptStatCode().contains(page.getStatusCode())){
             pageProcessor.process(page);
             extractAndAddRequests(page, spawnUrl);
@@ -418,6 +418,8 @@ public class Spider implements Runnable, Task {
                     pipeline.process(page.getResultItems(), this);
                 }
             }
+        } else {
+            logger.info("page status code error, page {} , code: {}", request.getUrl(), page.getStatusCode());
         }
         sleep(site.getSleepTime());
         return;
@@ -430,7 +432,6 @@ public class Spider implements Runnable, Task {
             // for cycle retry
             doCycleRetry(request);
         }
-        onError(request);
     }
 
     private void doCycleRetry(Request request) {

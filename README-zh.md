@@ -1,4 +1,4 @@
-![logo](https://raw.github.com/code4craft/webmagic/master/assets/logo.jpg)
+![logo](http://webmagic.io/images/logo.jpeg)
 
 
 [![Build Status](https://travis-ci.org/code4craft/webmagic.png?branch=master)](https://travis-ci.org/code4craft/webmagic)
@@ -38,12 +38,12 @@ webmagic使用maven管理依赖，在项目中添加对应的依赖即可使用w
 <dependency>
     <groupId>us.codecraft</groupId>
     <artifactId>webmagic-core</artifactId>
-    <version>0.6.1</version>
+    <version>0.7.2</version>
 </dependency>
 <dependency>
     <groupId>us.codecraft</groupId>
     <artifactId>webmagic-extension</artifactId>
-    <version>0.6.1</version>
+    <version>0.7.2</version>
 </dependency>
 ```
         
@@ -161,7 +161,7 @@ public class OschinaBlog {
 
 webmagic-samples目录里有一些定制PageProcessor以抽取不同站点的例子。
 
-webmagic的使用可以参考：[oschina openapi 应用：博客搬家](http://my.oschina.net/oscfox/blog/194507)
+webmagic的使用可以参考：[oschina openapi 应用：博客搬家](https://git.oschina.net/yashin/MoveBlog)
 
 
 ### 协议
