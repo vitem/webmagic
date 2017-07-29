@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.samples.vitem.httpclient;
+package cn.vitem.webmagic.common.httpclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.*;

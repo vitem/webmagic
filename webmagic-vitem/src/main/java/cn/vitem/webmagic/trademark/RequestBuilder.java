@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.samples.vitem;
+package cn.vitem.webmagic.trademark;
 
 import org.apache.commons.collections.map.HashedMap;
 import us.codecraft.webmagic.Page;

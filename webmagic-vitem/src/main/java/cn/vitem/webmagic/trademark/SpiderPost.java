@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.samples.vitem;
+package cn.vitem.webmagic.trademark;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.SerializationUtils;

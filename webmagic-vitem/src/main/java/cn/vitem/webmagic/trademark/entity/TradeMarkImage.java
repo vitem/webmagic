@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.samples.vitem.entity;
+package cn.vitem.webmagic.trademark.entity;
 
 import us.codecraft.webmagic.Request;
 

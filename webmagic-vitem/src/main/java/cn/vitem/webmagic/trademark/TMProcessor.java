@@ -1,16 +1,17 @@
-package us.codecraft.webmagic.samples.vitem;
+package cn.vitem.webmagic.trademark;
 
+import cn.vitem.webmagic.common.db.DBHelper;
+import cn.vitem.webmagic.common.httpclient.HttpUtils;
+import cn.vitem.webmagic.common.httpclient.ResponseWrap;
+import cn.vitem.webmagic.common.redis.CacheUtils;
+import cn.vitem.webmagic.common.utils.DownloadImage;
+import cn.vitem.webmagic.trademark.entity.TradeMarkImage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
-import us.codecraft.webmagic.samples.vitem.db.DBHelper;
-import us.codecraft.webmagic.samples.vitem.entity.TradeMarkImage;
-import us.codecraft.webmagic.samples.vitem.httpclient.HttpUtils;
-import us.codecraft.webmagic.samples.vitem.httpclient.ResponseWrap;
-import us.codecraft.webmagic.samples.vitem.redis.CacheUtils;
 import us.codecraft.webmagic.selector.Selectable;
 
 import java.io.File;
@@ -69,8 +70,6 @@ public class TMProcessor implements PageProcessor {
                 }
             }
         }
-
-
     }
 
     private void processImg( Page page) {
@@ -99,7 +98,7 @@ public class TMProcessor implements PageProcessor {
             httpUtils.addHeader("Host", "sbcx.saic.gov.cn:9080");
             httpUtils.addHeader("Referer", "http://sbcx.saic.gov.cn:9080/tmois/wsggcx_getGgaoMainFirst.xhtml?bid=54A29078477E5020E053640B503A5020&anNum=1560&anType=TMZCZX");
             httpUtils.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-            ResponseWrap response = httpUtils.execute();
+           ResponseWrap response = httpUtils.execute();
             InputStream inputStream = response.getInputStream();
             try {
                 DownloadImage.download(inputStream, fullPath);

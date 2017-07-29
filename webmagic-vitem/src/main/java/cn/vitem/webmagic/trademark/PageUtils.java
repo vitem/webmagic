@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.samples.vitem;
+package cn.vitem.webmagic.trademark;
 
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.selector.Selectable;
