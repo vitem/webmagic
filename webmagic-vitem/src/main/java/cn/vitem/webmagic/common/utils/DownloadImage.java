@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.samples.vitem;
+package cn.vitem.webmagic.common.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;  

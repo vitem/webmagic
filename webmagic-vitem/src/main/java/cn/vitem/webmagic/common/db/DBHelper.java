@@ -1,6 +1,7 @@
-package us.codecraft.webmagic.samples.vitem.db;
+package cn.vitem.webmagic.common.db;
 
-import us.codecraft.webmagic.samples.vitem.entity.TradeMarkImage;
+
+import cn.vitem.webmagic.trademark.entity.TradeMarkImage;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package us.codecraft.webmagic.samples.vitem.httpclient;
+package cn.vitem.webmagic.common.httpclient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
