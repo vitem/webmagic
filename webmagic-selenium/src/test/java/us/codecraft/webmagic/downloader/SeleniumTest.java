@@ -22,7 +22,7 @@ public class SeleniumTest {
     @Ignore("need chrome driver")
     @Test
     public void testSelenium() {
-        System.getProperties().setProperty("webdriver.chrome.driver", "/Users/yihua/Downloads/chromedriver");
+        System.getProperties().setProperty("webdriver.chrome.driver", "/Users/vitem/develop/chromedriver/chromedriver");
         Map<String, Object> contentSettings = new HashMap<String, Object>();
         contentSettings.put("images", 2);
 
@@ -31,9 +31,9 @@ public class SeleniumTest {
 
         DesiredCapabilities caps = DesiredCapabilities.chrome();
         caps.setCapability("chrome.prefs", preferences);
-        caps.setCapability("chrome.switches", Arrays.asList("--user-data-dir=/Users/yihua/temp/chrome"));
+        caps.setCapability("chrome.switches", Arrays.asList("--user-data-dir=/Users/vitem/data/chrome_data"));
         WebDriver webDriver = new ChromeDriver(caps);
-        webDriver.get("http://huaban.com/");
+        webDriver.get("http://wsjs.saic.gov.cn");
         WebElement webElement = webDriver.findElement(By.xpath("/html"));
         System.out.println(webElement.getAttribute("outerHTML"));
         webDriver.close();

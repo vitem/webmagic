@@ -15,8 +15,8 @@
         <spring-version>4.0.0.RELEASE</spring-version>
 
     </properties>
-    <artifactId>webmagic-parent</artifactId>
-    <name>webmagic-parent</name>
+    <artifactId>webmagic</artifactId>
+    <name>webmagic</name>
     <description>
         A crawler framework. It covers the whole lifecycle of crawler: downloading, url management, content
         extraction and persistent. It can simply the development of a specific crawler.
