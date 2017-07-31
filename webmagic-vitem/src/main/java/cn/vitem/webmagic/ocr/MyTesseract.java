@@ -66,15 +66,13 @@ public class MyTesseract {
 //            e.printStackTrace();
 //        }
         baiduAPI();
+
     }
 
-    static String appId = "9952879";
-    static String apiKey = "4AmHvVS4jLYqAaguAGXXN044";
-    static String secretKey = "EYE7D1UA1pq2Y4OymueIS6c3eTCfLGbq";
-
     public static void baiduAPI(){
-        AipOcr client = new AipOcr(appId,apiKey,secretKey);
-        String genFilePath = "/Users/vitem/data/tm_test/tm_list.png";
+        AipOcr client = BaiduOCR.getBaiduOcrClient();
+        //String genFilePath = "/Users/vitem/data/tm_test/tm_list.png";
+        String genFilePath = "D:/data/tm_test/tm_test/imgCut/dest/TMSDGG-5520E94F0FA4C098E053640B5030C098-cut.png";
         JSONObject genRes = client.basicGeneral(genFilePath, new HashMap<String, String>());
         System.out.println(genRes.toString(2));
 

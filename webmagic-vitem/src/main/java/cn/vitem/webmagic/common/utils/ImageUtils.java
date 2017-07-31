@@ -31,7 +31,9 @@ public class ImageUtils {
     public static String IMAGE_TYPE_PNG = "png";// 可移植网络图形
     public static String IMAGE_TYPE_PSD = "psd";// Photoshop的专用格式Photoshop
 
-    public static void main(String[] args) throws Exception {
+
+
+    private static void cutImgTest() throws Exception {
         String testImgPath = "/Users/vitem/data/tm_test/imgCut/src";
         File fileDir = new File(testImgPath);
         int x = 160;
@@ -49,15 +51,6 @@ public class ImageUtils {
             File descFile = new File(destPath);
             cutImg(file,descFile,x,y,width,height);
         }
-        //String fullName = String.format("%s/%s",testImgPath,fileName);
-//        try {
-//            int[] imgSize = getImgSize(fullName);
-//            JSONArray jsonArray =(JSONArray) JSON.toJSON(imgSize);
-//
-//            System.out.println(jsonArray.toJSONString());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     /**
@@ -695,4 +688,177 @@ public class ImageUtils {
         }
         return ret;
     }
+    public static ErrorStatus mergeImage(String file1Path, String file2Path,String mergeFilePath) throws IOException {
+        return mergeImage(new File(file1Path), new File(file2Path),new File( mergeFilePath));
+    }
+
+    public static ErrorStatus mergeImage(File file1, File file2,File mergeFile) throws IOException {
+       return mergeImage( file1,  file2, mergeFile,-1,-1);
+    }
+    public static ErrorStatus mergeImage(File file1, File file2,File mergeFile,int maxWidth,int maxHeight) throws IOException {
+        BufferedImage image1 = ImageIO.read(file1);
+        BufferedImage image2 = ImageIO.read(file2);
+        if(!mergeFile.getParentFile().exists()){
+            mergeFile.getParentFile().mkdirs();
+        }
+        int widthFile1 = image1.getWidth();
+        int heightFile1 = image1.getHeight();
+        int widthFile2 = image2.getWidth();
+        int heightFile2 = image2.getHeight();
+
+        int width = 0;
+        int height = 0;
+
+        if((widthFile1+widthFile2)<=maxWidth){
+            width =widthFile1+widthFile2;
+            height = heightFile1;
+        }else if((widthFile1+widthFile2)>maxWidth && (heightFile1+heightFile2)>maxHeight){
+            return ErrorStatus.buildLarge();
+        }else if((widthFile1+widthFile2)>maxWidth && (heightFile1+heightFile2)<=maxHeight){
+            width = widthFile1;
+            height = (heightFile1+heightFile2);
+        }
+
+        BufferedImage combined = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        // paint both images, preserving the alpha channels
+        Graphics g = combined.getGraphics();
+        ImageObserver imageObserver = new ImageObserver() {
+            @Override
+            public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+                return false;
+            }
+        };
+        g.drawImage(image1, 0, 0, imageObserver);
+        g.drawImage(image2,(width-widthFile1<0)?0:width-widthFile1, height-heightFile1<0?0:(height-heightFile1), imageObserver);
+        ImageIO.write(combined, "png", mergeFile);
+        return ErrorStatus.buildSuccess();
+    }
+
+    public static void mergeImages(String[] files, int type, String targetFile) {
+        int len = files.length;
+        if (len < 1) {
+            throw new RuntimeException("图片数量小于1");
+        }
+        File mergeFile = new File(targetFile);
+        if(!mergeFile.getParentFile().exists()){
+            mergeFile.getParentFile().mkdirs();
+        }
+        File[] src = new File[len];
+        BufferedImage[] images = new BufferedImage[len];
+        int[][] ImageArrays = new int[len][];
+        for (int i = 0; i < len; i++) {
+            try {
+                src[i] = new File(files[i]);
+                images[i] = ImageIO.read(src[i]);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            int width = images[i].getWidth();
+            int height = images[i].getHeight();
+            ImageArrays[i] = new int[width * height];
+            ImageArrays[i] = images[i].getRGB(0, 0, width, height, ImageArrays[i], 0, width);
+        }
+        int newHeight = 0;
+        int newWidth = 0;
+        for (int i = 0; i < images.length; i++) {
+            // 横向
+            if (type == 1) {
+                newHeight = newHeight > images[i].getHeight() ? newHeight : images[i].getHeight();
+                newWidth += images[i].getWidth();
+            } else if (type == 2) {// 纵向
+                newWidth = newWidth > images[i].getWidth() ? newWidth : images[i].getWidth();
+                newHeight += images[i].getHeight();
+            }
+        }
+        if (type == 1 && newWidth < 1) {
+            return;
+        }
+        if (type == 2 && newHeight < 1) {
+            return;
+        }
+
+        // 生成新图片
+        try {
+            BufferedImage ImageNew = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+            int height_i = 0;
+            int width_i = 0;
+            for (int i = 0; i < images.length; i++) {
+                if (type == 1) {
+                    ImageNew.setRGB(width_i, 0, images[i].getWidth(), newHeight, ImageArrays[i], 0,
+                            images[i].getWidth());
+                    width_i += images[i].getWidth();
+                } else if (type == 2) {
+                    ImageNew.setRGB(0, height_i, newWidth, images[i].getHeight(), ImageArrays[i], 0, newWidth);
+                    height_i += images[i].getHeight();
+                }
+            }
+            //输出想要的图片
+            ImageIO.write(ImageNew, targetFile.split("\\.")[1], mergeFile);
+
+        } catch (Exception e) {
+            mergeFile.delete();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        //cutImgTest();
+        //mergeImgTest();
+        mergeImgTests();
+        //mergeDir();
+    }
+
+    static int max = 4096;
+
+    private static void mergeDir() throws IOException {
+        String dirPath = "D:/data/tm_test/tm_test/imgCut/dest/";
+        File dirFile = new File(dirPath);
+        File[] files = dirFile.listFiles();
+        File originFile = null;
+        for (int i = 0; i < files.length; i++) {
+            if(!files[i].getName().contains(".png")){
+                continue;
+            }
+            if(originFile==null){
+                originFile = files[i];
+                continue;
+            }
+            File mergeFile = new File(dirPath+"merge/merge"+i+".png");
+            ErrorStatus errorStatus = mergeImage(originFile,files[i],mergeFile,max,max);
+            originFile = mergeFile;
+        }
+
+
+    }
+
+    private static void mergeImgTest() throws IOException {
+        String path = "D:/data/tm_test/tm_test/";
+        File file1 = new File(path +"merge/merge333.png");
+        File file2 = new File(path +"tm_list.png");
+        File mergeFile = new File(path +"merge/merge444.png");
+        File mergeDir = mergeFile.getParentFile();
+
+        if(!mergeDir.exists()){
+            mergeDir.mkdirs();
+        }
+        ErrorStatus errorStatus = mergeImage(file1,file2,mergeFile,max,max);
+        System.out.println(errorStatus.getCode());
+    }
+
+    private static void mergeImgTests() throws IOException {
+        String path = "D:/data/tm_test/tm_test/";
+        //File file1 = new File(path +"merge/merge.png");
+        File file1 = new File(path +"merge/merge333.png");
+        File file2 = new File(path +"tm_list.png");
+        String[] paths = new String[]{file1.getPath(),file2.getPath()};
+        File mergeFile = new File(path +"merge/merge444.png");
+        File mergeDir = mergeFile.getParentFile();
+
+        if(!mergeDir.exists()){
+            mergeDir.mkdirs();
+        }
+        mergeImages(paths,1,mergeFile.getPath());
+    }
+
 }
