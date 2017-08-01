@@ -246,8 +246,13 @@ public class ImageUtils {
      * @param width 目标切片宽度
      * @param height 目标切片高度
      */
-    public final static void cutImg(File srcImageFile, File result,
-                                    int x, int y, int width, int height) {
+    public final static void cutImg(File srcImageFile, File result, int x, int y, int width, int height) {
+
+        File parentFile = result.getParentFile();
+        if(!parentFile.exists()){
+            parentFile.mkdirs();
+        }
+
         try {
             // 读取源图像
 

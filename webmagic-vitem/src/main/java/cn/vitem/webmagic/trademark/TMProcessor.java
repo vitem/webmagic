@@ -1,5 +1,6 @@
 package cn.vitem.webmagic.trademark;
 
+import cn.vitem.webmagic.common.Constant;
 import cn.vitem.webmagic.common.db.DBHelper;
 import cn.vitem.webmagic.common.httpclient.HttpUtils;
 import cn.vitem.webmagic.common.httpclient.ResponseWrap;
@@ -32,7 +33,7 @@ public class TMProcessor implements PageProcessor {
 
     protected String prefix = "http://sbcx.saic.gov.cn:9080/tmois/";
 
-    protected String imgPath = "/Users/vitem/data/trademark";
+    protected String imgPath = Constant.DATA_ROOT_PATH;
 
     @Override
     public void process(Page page) {
