@@ -13,6 +13,9 @@ import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.io.*;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.util.Date;
 
 /**
  * 图片处理工具类：<br>
@@ -703,9 +706,7 @@ public class ImageUtils {
     public static ErrorStatus mergeImage(File file1, File file2,File mergeFile,int maxWidth,int maxHeight) throws IOException {
         BufferedImage image1 = ImageIO.read(file1);
         BufferedImage image2 = ImageIO.read(file2);
-        if(!mergeFile.getParentFile().exists()){
-            mergeFile.getParentFile().mkdirs();
-        }
+        FileTools.createParentDir(mergeFile);
         int widthFile1 = image1.getWidth();
         int heightFile1 = image1.getHeight();
         int widthFile2 = image2.getWidth();
@@ -746,9 +747,7 @@ public class ImageUtils {
             throw new RuntimeException("图片数量小于1");
         }
         File mergeFile = new File(targetFile);
-        if(!mergeFile.getParentFile().exists()){
-            mergeFile.getParentFile().mkdirs();
-        }
+        FileTools.createParentDir(mergeFile);
         File[] src = new File[len];
         BufferedImage[] images = new BufferedImage[len];
         int[][] ImageArrays = new int[len][];
@@ -865,5 +864,44 @@ public class ImageUtils {
         }
         mergeImages(paths,1,mergeFile.getPath());
     }
+    public static long copyImage(String f1Path,String f2Path) throws Exception{
+        File targetFile = new File(f2Path);
+
+        return copyImage(new File(f1Path),targetFile);
+    }
+    public static long copyImage(File srcFile,File targetFile) throws Exception{
+        FileTools.createParentDir(targetFile);
+        long time=new Date().getTime();
+        int length=2097152;
+        FileInputStream inputStream=new FileInputStream(srcFile);
+        RandomAccessFile out=new RandomAccessFile(targetFile,"rw");
+        FileChannel fileChannel=inputStream.getChannel();
+        MappedByteBuffer outC=null;
+        MappedByteBuffer inbuffer=null;
+        byte[] b=new byte[length];
+        while(true){
+            if(fileChannel.position()==fileChannel.size()){
+                fileChannel.close();
+                outC.force();
+                out.close();
+                return new Date().getTime()-time;
+            }
+            if((fileChannel.size()-fileChannel.position())<length){
+                length=(int)(fileChannel.size()-fileChannel.position());
+            }else{
+                length=20971520;
+            }
+            b=new byte[length];
+            inbuffer=fileChannel.map(FileChannel.MapMode.READ_ONLY,fileChannel.position(),length);
+            inbuffer.load();
+            inbuffer.get(b);
+            outC=out.getChannel().map(FileChannel.MapMode.READ_WRITE,fileChannel.position(),length);
+            fileChannel.position(b.length+fileChannel.position());
+            outC.put(b);
+            outC.force();
+        }
+    }
+
+
 
 }
