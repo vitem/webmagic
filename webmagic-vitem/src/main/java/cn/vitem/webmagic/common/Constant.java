@@ -19,6 +19,12 @@ public class Constant {
 
     public static Map<String, String> TYPE_MAP = new LinkedHashMap<String, String>();
 
+    public static String CHARSET_NAME = "UTF-8";
+
+    public static String PATTERN = "^[0-9a-zA-Z]{5,11}$";
+
+    public static String FILE_SPLIT = "\\.";
+
     static {
         //需要合成 需要裁剪
         TYPE_MAP.put("TMSDGG", "1"); //1
@@ -43,7 +49,7 @@ public class Constant {
         //不处理此类数据
         TYPE_MAP.put("TMJTSQ", "2");
         //需要合成 但是不需要 裁剪
-        TYPE_MAP.put("TMZCSQ", "0");
+        TYPE_MAP.put("TMZCSQ", "1");
 
     }
 

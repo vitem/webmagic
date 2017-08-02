@@ -1,11 +1,14 @@
 package cn.vitem.webmagic.common.utils;
 
+import cn.vitem.webmagic.common.Constant;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -23,7 +26,7 @@ import java.util.Date;
  * @author Administrator
  */
 public class ImageUtils {
-
+    protected static  Logger logger = LoggerFactory.getLogger(ImageUtils.class);
     /**
      * 几种常见的图片格式
      */
@@ -33,16 +36,16 @@ public class ImageUtils {
     public static String IMAGE_TYPE_BMP = "bmp";// 英文Bitmap（位图）的简写，它是Windows操作系统中的标准图像文件格式
     public static String IMAGE_TYPE_PNG = "png";// 可移植网络图形
     public static String IMAGE_TYPE_PSD = "psd";// Photoshop的专用格式Photoshop
-
-
+    public static int IMG_WIDTH = 100;
+    public static int IMG_HEIGHT = 1180;
+    public static int IMG_DEFAULT_WIDTH = 1190;
 
     private static void cutImgTest() throws Exception {
         String testImgPath = "/Users/vitem/data/tm_test/imgCut/src";
         File fileDir = new File(testImgPath);
         int x = 160;
         int y = 274;
-        int width = 100;
-        int height = 1180;
+
 
         for(File file : fileDir.listFiles()){
             int[] imgSize = getImgSize(file);
@@ -52,7 +55,7 @@ public class ImageUtils {
             String descFileName = srcFileName.substring(0,6)+"-"+srcFileName.substring(6,srcFileName.length()-4)+"-cut"+srcFileName.substring(srcFileName.length()-4,srcFileName.length());
             String destPath = String.format("%s/%s/%s",file.getParentFile().getParent(),"dest",descFileName);
             File descFile = new File(destPath);
-            cutImg(file,descFile,x,y,width,height);
+            cutImg(file,descFile,x,y,IMG_WIDTH,IMG_HEIGHT);
         }
     }
 
@@ -756,6 +759,7 @@ public class ImageUtils {
                 src[i] = new File(files[i]);
                 images[i] = ImageIO.read(src[i]);
             } catch (Exception e) {
+                logger.info("exception file = {}",files[i]);
                 throw new RuntimeException(e);
             }
             int width = images[i].getWidth();
@@ -798,7 +802,7 @@ public class ImageUtils {
                 }
             }
             //输出想要的图片
-            ImageIO.write(ImageNew, targetFile.split("\\.")[1], mergeFile);
+            ImageIO.write(ImageNew, targetFile.split(Constant.FILE_SPLIT)[1], mergeFile);
 
         } catch (Exception e) {
             mergeFile.delete();

@@ -21,14 +21,13 @@ import java.util.Map;
 public class ImageProcess {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private String anNum;
-
     private String anNumPaths;
 
     private int x = 160;
-    private int y = 274;
+    private int y = 276;
     private int width = 100;
     private int height = 1180;
-    private int capacity = 30;
+
 
     /**
      * 图片处理，需要裁剪的裁剪，不需要裁剪的copy到需要合并的目录
@@ -57,7 +56,7 @@ public class ImageProcess {
             }
             File[] images = anTypeFile.listFiles();
             cutImage(typeName, images);
-            mergeImage(images,4);
+            mergeImage(typeName,images);
         }
     }
 
@@ -80,21 +79,22 @@ public class ImageProcess {
                 ImageUtils.cutImg(image, new File(destImagePath), x, y, width, height);
                     logger.info("cut ：{}",originPath);
             } else
-                //图片copy
-                if ("0".equals(Constant.TYPE_MAP.get(typeName))) {
-                    FileTools.channelCopy(image, new File(destImagePath));
-                    logger.info("copy ：{}",image.getAbsolutePath());
-                }
+            //图片copy
+            if ("0".equals(Constant.TYPE_MAP.get(typeName))) {
+                FileTools.channelCopy(image, new File(destImagePath));
+                logger.info("copy ：{}",image.getAbsolutePath());
+            }
         }
     }
 
-    private void mergeImage( File[] images,int capacity) {
+    private void mergeImage(String typeName, File[] images) {
         Map<Integer,List<String>> mergeMap = new HashMap<Integer, List<String>>();
         for (int k = 0; k < images.length; k++) {
             File image = images[k];
             if (!image.getName().contains(".png")) {
                 continue;
             }
+            int capacity = "1".equals(Constant.TYPE_MAP.get(typeName))?(4000/ImageUtils.IMG_WIDTH):(4000/ImageUtils.IMG_DEFAULT_WIDTH);
             List<String> filePathList = null;
             int index = k/capacity;
             if(!mergeMap.containsKey(index)){
@@ -119,18 +119,21 @@ public class ImageProcess {
                 targetFilePath = path.replace(Constant.DATA_BUINESS_CUT, Constant.DATA_BUINESS_MERGE);
                 targetFilePath = targetFilePath.replace(fileName,"");
                 String targetFileName = new String(targetFilePath);
+
                 targetFileName = targetFileName.split(Constant.DATA_BUINESS_MERGE)[1];
                 targetFileName = targetFileName.replace("\\","_");
                 targetFileName = targetFileName.replace("/","_");
                 targetFileName = targetFileName.startsWith("_")?targetFileName.substring(1,targetFileName.length()):targetFileName;
-                targetFileName = index==0?targetFileName.substring(0,targetFileName.length()-1):targetFileName+index;
-                //targetFileName = targetFileName.endsWith("_")?targetFileName.substring(0,targetFileName.length()-1):targetFileName;
+                targetFileName = targetFileName+index;
                 targetFilePath = String.format("%s%s.png",targetFilePath,targetFileName);
                 String[] filePaths = new String[filePathList.size()];
                 for (int i = 0; i < filePathList.size(); i++) {
-                    filePaths[i]=filePathList.get(i);
-                    logger.info("merge ：{}",filePathList.get(i));
+                    String srcPath = filePathList.get(i);
+                    srcPath = "1".equals(Constant.TYPE_MAP.get(typeName))? srcPath.replace(".png", "-cut.png"):srcPath;
+                    filePaths[i]=srcPath;
+                    logger.info("src files path ：{}",srcPath);
                 }
+                logger.info("dest file path ：----> {}",targetFilePath);
                 ImageUtils.mergeImages(filePaths,1,targetFilePath);
             }
         }

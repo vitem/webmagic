@@ -1,15 +1,21 @@
 package cn.vitem.webmagic.common.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.channels.FileChannel;
 
 /**
  * Created by vitem_acer on 2017/8/1.
  */
 public class FileTools {
+
+    public static String PNG = "png";
+    public static String PNG_EXT = ".png";
+    public static String TXT = "txt";
+    public static String TXT_EXT = ".txt";
+    public static String CUT_EXT = "-cut";
+    public static String CUT_PNG_EXT = "-cut.png";
+
+
 
     public static void channelCopy(File srcFile, File targetFile) {
         createParentDir(targetFile);
@@ -40,6 +46,21 @@ public class FileTools {
     public static void createParentDir( File file){
         if(!file.getParentFile().exists()){
             file.getParentFile().mkdirs();
+        }
+    }
+
+    public static void writeText(String text,String filePath){
+        int off = 0;
+        OutputStreamWriter recognizeOSW = null;
+        try {
+            recognizeOSW = new OutputStreamWriter(new FileOutputStream(filePath));
+            recognizeOSW.write(text,off,text.length());
+            recognizeOSW.flush();
+            recognizeOSW.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
