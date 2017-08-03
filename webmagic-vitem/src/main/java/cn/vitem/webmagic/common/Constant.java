@@ -26,6 +26,7 @@ public class Constant {
     public static String FILE_SPLIT = "\\.";
 
     public static String SIPO_CHECK_CODE_PATH ;
+    public static String SIPO_CHECK_CODE_URL   = "http://epub.sipo.gov.cn/vci.jpg";
 
     public static String osName = System.getProperty("os.name").toLowerCase();
 
