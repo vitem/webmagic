@@ -4,7 +4,10 @@ package cn.vitem.webmagic.ocr;
 import cn.vitem.webmagic.common.Constant;
 import cn.vitem.webmagic.common.utils.FileTools;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +22,6 @@ public class TesseractOCR {
     private static final String EOL = System.getProperty("line.separator");
     private static String tessPath_win = "D:/develop/Tesseract-OCR";
     // private String tessPath = new File("tesseract").getAbsolutePath();
-    private static String OS = System.getProperty("os.name").toLowerCase();
 
     public static String recognizeImage(File imageFile, String imageFormat) throws Exception {
         File tempImage = ImageIOHelper.createImage(imageFile, imageFormat);

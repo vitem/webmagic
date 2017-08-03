@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 /**
- * Created by vitem_acer on 2017/7/31.
+ * @author vitem on 2017-7-31.
  */
 public class BaiduOCR {
 
@@ -22,9 +22,9 @@ public class BaiduOCR {
         return aipOcr;
     }
 
-    public static void baiduAPI(){
+    public static void main(String[] a){
         AipOcr client = BaiduOCR.getBaiduOcrClient();
-        String genFilePath = "D:/data/trademark_cut/1561/TMZCSQ/TMCXSQ5520E94F0EBCC098E053640B5030C098.png";
+        String genFilePath = "/Users/vitem/data/freeze.png";
         //String genFilePath = "D:/data/tm_test/tm_test/imgCut/dest/TMSDGG-5520E94F0FA4C098E053640B5030C098-cut.png";
         JSONObject genRes = client.basicGeneral(genFilePath, new HashMap<String, String>());
         System.out.println(genRes.toString(2));

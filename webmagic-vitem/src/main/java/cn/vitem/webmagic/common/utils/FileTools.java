@@ -9,6 +9,7 @@ import java.nio.channels.FileChannel;
 public class FileTools {
 
     public static String PNG = "png";
+    public static String JPG = "jpg";
     public static String PNG_EXT = ".png";
     public static String TXT = "txt";
     public static String TXT_EXT = ".txt";
@@ -63,4 +64,30 @@ public class FileTools {
             e.printStackTrace();
         }
     }
+
+//    public static void downImg(String imgUrl){
+//        try {
+//            //实例化url
+//            URL url = new URL(imgUrl);
+//            //载入图片到输入流
+//            java.io.BufferedInputStream bis = new BufferedInputStream(url.openStream());
+//            //实例化存储字节数组
+//            byte[] bytes = new byte[100];
+//            //设置写入路径以及图片名称
+//            File file = new File(Constant.SIPO_CHECK_CODE_PATH);
+//            FileTools.createParentDir(file);
+//            OutputStream bos = new FileOutputStream(file);
+//            int len;
+//            while ((len = bis.read(bytes)) > 0) {
+//                bos.write(bytes, 0, len);
+//            }
+//            bis.close();
+//            bos.flush();
+//            bos.close();
+//            //关闭输出流
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

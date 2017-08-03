@@ -25,7 +25,14 @@ public class Constant {
 
     public static String FILE_SPLIT = "\\.";
 
+    public static String SIPO_CHECK_CODE_PATH ;
+
+    public static String osName = System.getProperty("os.name").toLowerCase();
+
     static {
+
+        SIPO_CHECK_CODE_PATH = Constant.osName.contains("windows")?"d:/develop/data/sipo/verify_code/vci.jpg":"/Users/vitem/data/sipo/verify_code/vci.jpg";
+
         //需要合成 需要裁剪
         TYPE_MAP.put("TMSDGG", "1"); //1
         TYPE_MAP.put("TMZCYS", "1");
