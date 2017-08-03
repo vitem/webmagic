@@ -1,5 +1,7 @@
 package cn.vitem.webmagic.ocr;
 
+import cn.vitem.webmagic.common.utils.FileTools;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -65,18 +67,18 @@ public class ClearImageHelper {
         }
 
         // 矩阵打印
-//        for (int y = 0; y < h; y++) {
-//            for (int x = 0; x < w; x++) {
-//                if (isBlack(binaryBufferedImage.getRGB(x, y))) {
-//                    System.out.print("*");
-//                } else {
-//                    System.out.print(" ");
-//                }
-//            }
-//            System.out.println();
-//        }
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                if (isBlack(binaryBufferedImage.getRGB(x, y))) {
+                    System.out.print("*");
+                } else {
+                    System.out.print(" ");
+                }
+            }
+            System.out.println();
+        }
 
-        ImageIO.write(binaryBufferedImage, "png", new File(destDir, sfile.getName()));
+        ImageIO.write(binaryBufferedImage, FileTools.PNG, new File(destDir, sfile.getName()));
     }
 
     public static boolean isBlack(int colorInt) {
@@ -160,6 +162,6 @@ public class ClearImageHelper {
 
     public static void main(String[] args) throws IOException {
 
-        cleanImage(new File("D:/data/trademark_merge/1561/TMZCSQ/1561_TMZCSQ_0.png"), "D:/data/trademark_merge/1561/TMSDGG/clear");
+        cleanImage(new File("/Users/vitem/data/vci.jpg"), "/Users/vitem/data/clear");
     }
 }

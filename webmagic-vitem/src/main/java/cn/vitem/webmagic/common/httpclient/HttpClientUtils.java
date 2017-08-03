@@ -14,9 +14,8 @@ public class HttpClientUtils {
     private String token;
 
 
-    public HttpClientUtils (String url,String token){
+    public HttpClientUtils (String url){
         this.url = url;
-        this.token = token;
     }
 
 

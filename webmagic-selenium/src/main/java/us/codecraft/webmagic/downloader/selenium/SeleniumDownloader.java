@@ -94,19 +94,11 @@ public class SeleniumDownloader implements Downloader, Closeable {
 		WebDriver.Options manage = webDriver.manage();
 		Site site = task.getSite();
 		if (site.getCookies() != null) {
-			for (Map.Entry<String, String> cookieEntry : site.getCookies()
-					.entrySet()) {
-				Cookie cookie = new Cookie(cookieEntry.getKey(),
-						cookieEntry.getValue());
+			for (Map.Entry<String, String> cookieEntry : site.getCookies().entrySet()) {
+				Cookie cookie = new Cookie(cookieEntry.getKey(),cookieEntry.getValue());
 				manage.addCookie(cookie);
 			}
 		}
-
-		/*
-		 * TODO You can add mouse event or other processes
-		 * 
-		 * @author: bob.li.0718@gmail.com
-		 */
 
 		WebElement webElement = webDriver.findElement(By.xpath("/html"));
 		String content = webElement.getAttribute("outerHTML");

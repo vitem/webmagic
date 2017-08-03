@@ -4,7 +4,10 @@ package cn.vitem.webmagic.ocr;
 import cn.vitem.webmagic.common.Constant;
 import cn.vitem.webmagic.common.utils.FileTools;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +22,6 @@ public class TesseractOCR {
     private static final String EOL = System.getProperty("line.separator");
     private static String tessPath_win = "D:/develop/Tesseract-OCR";
     // private String tessPath = new File("tesseract").getAbsolutePath();
-    private static String OS = System.getProperty("os.name").toLowerCase();
 
     public static String recognizeImage(File imageFile, String imageFormat) throws Exception {
         File tempImage = ImageIOHelper.createImage(imageFile, imageFormat);
@@ -27,12 +29,10 @@ public class TesseractOCR {
         File outputFile = new File(outputPath);
 
         List cmd = new ArrayList();
-        if (OS.contains("windows")) {
+        if (Constant.osName.contains("windows")) {
             cmd.add(tessPath_win + "/tesseract.exe ");
-        } else if (OS.contains("linux")) {
-            cmd.add("tesseract");
-        } else {
-            cmd.add("tesseract");
+        }  else {
+            cmd.add("/usr/local/brew/Cellar/tesseract/3.05.01/bin/tesseract");
         }
         cmd.add("");
         cmd.add(outputFile.getName());
@@ -51,11 +51,13 @@ public class TesseractOCR {
         tempImage.delete();
         StringBuffer recognizeText = new StringBuffer();
         StringBuffer unRecognizeText = new StringBuffer();
+        StringBuffer echoText = new StringBuffer();
         String outPutPath = outputFile.getAbsolutePath() + FileTools.TXT_EXT;
         if (w == 0) {
             BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(outPutPath), Constant.CHARSET_NAME ));
             String str;
             while ((str = in.readLine()) != null) {
+                echoText.append(str).append(EOL);
                 if(str.trim().length()>0){
                     if(str.matches(Constant.PATTERN)){
                         recognizeText.append(str).append(EOL);
@@ -89,11 +91,11 @@ public class TesseractOCR {
         
         String unRecognizePath = String.format("%s-ur.%s",outPutPath.split(Constant.FILE_SPLIT)[0],outPutPath.split(Constant.FILE_SPLIT)[1]);
         FileTools.writeText(unRecognizeText.toString(),unRecognizePath);
-        return unRecognizeText.toString();
+        return echoText.toString();
     }
 
     public static  void main(String[] a) throws Exception {
-        File file = new File("D:/data/trademark_merge/1561/TMZCSQ/1561_TMZCSQ_0.png");
+        File file = new File("/Users/vitem/data/clear/vci.jpg");
         String text = recognizeImage(file, FileTools.PNG);
         System.out.println(text);
     }
